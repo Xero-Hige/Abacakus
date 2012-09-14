@@ -1,8 +1,8 @@
 import sys
 import os
-sys.path.insert(0,os.path.join(__file__, '..', '..'))
+sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from Librerias.Conversor import Conversor as Conversor
+from Librerias.Conversor import Conversor
 
 def print_test(nombre,resultado):
 	if resultado:
@@ -39,6 +39,5 @@ def _comprobar_codificacion(numero,esperado,conversor):
 	print_test("Prueba conversor codifica  "+str(numero)+" en "+resultado_esperado+":  ",resultado == resultado_esperado)
 
 if __name__ == "__main__":
-	print "/-------Pruebas conversor BPFS-------/" 
 	prueba_decodificar_bpfs()
 	prueba_codificar_bpfs()

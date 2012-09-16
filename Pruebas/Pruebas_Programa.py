@@ -3,34 +3,25 @@ import time
 import datetime
 import select
 import sys
+import os
 
-def correr_pruebas():
-	
-	output = ""
-	
-	output += ejecutar_comando(["python","./Pruebas/Pruebas_Decodificacion.py"])[1]
-	
-	output += ejecutar_comando(["python","./Pruebas/Pruebas_Conversor.py"])[1]
-	
-	output += ejecutar_comando(["python","./Pruebas/Pruebas_Programa.py"])[1]
-	
-	output_s = output.split("\n")
+DIRECTORIO_PROGRAMA = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PATH_PROGRAMA = os.path.join(DIRECTORIO_PROGRAMA, 'PyOrga.py')
+PATH_CARPETA_SCRIPTS = os.path.join(DIRECTORIO_PROGRAMA, 'Scripts Abbacus')
 
-	fallidas = ""
-	for x in output_s:
-		if ("ERROR" in x):
-			fallidas += x+"\n"
-	
-	return output,fallidas	
-
-	
+def print_test(nombre,resultado):
+	if resultado:
+		print nombre + "OK"
+	else:
+		print nombre + "ERROR"
+		
 def ejecutar_comando(cmd):
 
 	p = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 	
 	output = ""
-	p_timeout = 20 #Tiempo maximo de ejecucion
-	q_timeout = 05 #Tiempo maximo sin respuesta por parte del stdout del proceso
+	p_timeout = 60 #Tiempo maximo de ejecucion
+	q_timeout = 35 #Tiempo maximo sin respuesta por parte del stdout del proceso
 	
 	tiempo_inicio = time.time()
 	
@@ -62,10 +53,12 @@ def ejecutar_comando(cmd):
 		output += p.stdout.readline()
 
 	return p.returncode, output
+		
+def prueba_correr_suma():
+	script = os.path.join(PATH_CARPETA_SCRIPTS, "ejemplo_suma_1.aba")
+	cmd = ["python",PATH_PROGRAMA,"-v","-c",script]
+	returncode, output = ejecutar_comando(cmd)
+	print_test("Correr suma 1: ","600 0005" in output)
 	
-output,fallidas = correr_pruebas()
-print "Pruebas: "
-print output
-print "Fallidas: "
-print fallidas
-raw_input()
+if __name__ == "__main__":
+	prueba_correr_suma()
